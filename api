@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+
+from influxdb import InfluxDBClient
+from flask import Flask, request
+import logging
+import datetime
+
+logging.basicConfig(level=logging.INFO)
+
+api = Flask(__name__)
+
+@api.route('/api/v1/metric', methods=['POST'])
+def create():
+    incoming_data = request.get_json()
+
+    payload = [
+        {
+            "measurement": "smart_garden",
+            "tags": {
+                "name": "metric"
+            },
+            "time": datetime.datetime.utcnow().isoformat(),
+            "fields": {
+                "soil": incoming_data['soil_humidity'],
+                "luminosidade": incoming_data['luminosidade'],
+                "air_humidity": incoming_data['air_humidity'],
+                "air_temp": incoming_data['air_temp']
+            }
+        }
+    ]
+
+    influx_client = InfluxDBClient('influxdb', 8086, database='smart_garden')
+    influx_client.write_points(payload)
+
+    return 'Metric created', 201
+
+if __name__ == '__main__':
+    api.run(debug=True, host='0.0.0.0', port=3000)
