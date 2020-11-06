@@ -1,10 +1,10 @@
-version: '3.7'
+ersion: '3.7'
 services:
   api:
     build: .
     restart: always
     volumes:
-      - .:/api
+      - .:/nac2
     command: ./api
     ports:
       - 80:3000
@@ -19,6 +19,5 @@ services:
 
 volumes:
   influx-data:
-
     # <measurement>[,<tag-key>=<tag-value>...] <field-key>=<field-value>[,<field2-key>=<field2-value>...] [unix-nano-timestamp]
     # INSERT pet,name=miau presence=false
